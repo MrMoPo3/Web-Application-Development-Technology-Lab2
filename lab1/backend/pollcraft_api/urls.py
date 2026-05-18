@@ -37,6 +37,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/about/", about_app, name="about-app"),
     path("api/auth/", include("accounts.urls")),
+    path("api/collaboration/", include("collaboration.urls")),
     path("api/polls/", include("polls.urls")),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path("api/docs/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),

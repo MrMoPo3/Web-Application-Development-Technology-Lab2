@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 
@@ -8,6 +9,7 @@ DEBUG = True
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -18,8 +20,10 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "drf_spectacular",
     "corsheaders",
+    "channels",
     "accounts",
     "polls",
+    "collaboration",
 ]
 
 MIDDLEWARE = [
@@ -51,6 +55,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "pollcraft_api.wsgi.application"
+ASGI_APPLICATION = "pollcraft_api.asgi.application"
 
 DATABASES = {
     "default": {
@@ -94,7 +99,25 @@ REST_FRAMEWORK = {
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "PollCraft API",
-    "DESCRIPTION": "Server API for registration, profiles and poll management.",
-    "VERSION": "1.0.0",
+    "DESCRIPTION": "Server API for registration, profiles, poll management and real-time collaboration.",
+    "VERSION": "2.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }
+
+REDIS_URL = os.environ.get("REDIS_URL")
+
+if REDIS_URL:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [REDIS_URL],
+            },
+        }
+    }
+else:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels.layers.InMemoryChannelLayer",
+        }
+    }
